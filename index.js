@@ -1,26 +1,39 @@
 const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+const cors = require('cors');
+
 const app = express();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http, {
-    cors: {
-        origin: "https://dub55.github.io/rps",
-        methods: ["GET", "POST"]
-    }
+const server = http.createServer(app);
+
+// CORS configuration
+app.use(cors({
+  origin: ['https://dub5.zapto.org', 'http://localhost:3000'],
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
+
+const io = socketIo(server, {
+  cors: {
+    origin: ['https://dub5.zapto.org', 'http://localhost:3000'],
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
 });
 
 io.on('connection', (socket) => {
-    console.log('A user connected');
+  console.log('A user connected');
 
-    socket.on('chat message', (data) => {
-        io.emit('chat message', data);
-    });
+  socket.on('chat message', (data) => {
+    io.emit('chat message', data);
+  });
 
-    socket.on('disconnect', () => {
-        console.log('User disconnected');
-    });
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
 });
 
 const PORT = process.env.PORT || 3000;
-http.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
