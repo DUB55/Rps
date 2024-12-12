@@ -3,7 +3,7 @@ const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
     cors: {
-        origin: "https://your-github-pages-url.github.io",
+        origin: "https://dub55.github.io/rps",
         methods: ["GET", "POST"]
     }
 });
